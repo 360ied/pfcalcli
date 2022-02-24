@@ -13,7 +13,7 @@ var (
 	ErrInvalidOperator = errors.New("libpfcalc: invalid operator")
 )
 
-var operators map[string]func(stack []float64) ([]float64, error) = map[string]func(stack []float64) ([]float64, error){
+var operators = map[string]func(stack []float64) ([]float64, error){
 	"+":     opAdd,
 	"-":     opSub,
 	"*":     opMul,

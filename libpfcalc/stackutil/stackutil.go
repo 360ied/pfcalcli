@@ -13,7 +13,7 @@ func Pop(stack []float64) ([]float64, float64, bool) {
 
 	value := stack[len(stack)-1]
 
-	return stack[:len(stack)-1], value, true
+	return stack[0 : len(stack)-1], value, true
 }
 
 func Clone(stack []float64) []float64 {

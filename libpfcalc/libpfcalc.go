@@ -2,9 +2,10 @@ package libpfcalc
 
 import (
 	"errors"
-	"pfcalcli/libpfcalc/stackutil"
 	"strconv"
 	"strings"
+
+	"pfcalcli/libpfcalc/stackutil"
 )
 
 var (
@@ -12,9 +13,10 @@ var (
 	ErrInvalidOperator = errors.New("libpfcalc: invalid operator")
 )
 
-var (
-	operators map[string]func(stack []float64) ([]float64, error)
-)
+var operators map[string]func(stack []float64) ([]float64, error) = map[string]func(stack []float64) ([]float64, error){
+	"+": opAdd,
+	"-": opSub,
+}
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation
 // If an error is returned, the old stack is returned as well
@@ -43,6 +45,8 @@ func Evaluate(stack []float64, expressionStr string) ([]float64, error) {
 				// operator had an error
 				return stack, err
 			}
+
+			continue
 		}
 
 		newStack = stackutil.Push(newStack, value)

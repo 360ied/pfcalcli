@@ -2,6 +2,7 @@ package libpfcalc
 
 import (
 	"errors"
+	"math"
 	"strconv"
 	"strings"
 
@@ -25,6 +26,7 @@ var operators = map[string]func(stack []float64) ([]float64, error){
 	"rot":   opRot,
 	"drop":  opDrop,
 	"print": opPrint,
+	"abs":   mathShim(math.Abs),
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation

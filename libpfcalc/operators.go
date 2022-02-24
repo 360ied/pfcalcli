@@ -102,6 +102,10 @@ func opDrop(stack []float64) ([]float64, error) {
 	return stack, nil
 }
 
+func opClr([]float64) ([]float64, error) {
+	return make([]float64, 0), nil
+}
+
 func opPrint(stack []float64) ([]float64, error) {
 	fmt.Println(stack)
 

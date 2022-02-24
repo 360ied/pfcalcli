@@ -25,6 +25,7 @@ var operators = map[string]func(stack []float64) ([]float64, error){
 	"over":  opOver,
 	"rot":   opRot,
 	"drop":  opDrop,
+	"clr":   opClr,
 	"print": opPrint,
 	"abs":   mathShim(math.Abs),
 }

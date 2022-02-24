@@ -14,8 +14,14 @@ var (
 )
 
 var operators map[string]func(stack []float64) ([]float64, error) = map[string]func(stack []float64) ([]float64, error){
-	"+": opAdd,
-	"-": opSub,
+	"+":     opAdd,
+	"-":     opSub,
+	"swap":  opSwap,
+	"dup":   opDup,
+	"over":  opOver,
+	"rot":   opRot,
+	"drop":  opDrop,
+	"print": opPrint,
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation

@@ -1,7 +1,7 @@
 package stackutil
 
-func Push(stack []float64, value float64) []float64 {
-	stack = append(stack, value)
+func Push(stack []float64, value ...float64) []float64 {
+	stack = append(stack, value...)
 	return stack
 }
 

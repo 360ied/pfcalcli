@@ -18,6 +18,7 @@ var operators map[string]func(stack []float64) ([]float64, error) = map[string]f
 	"-":     opSub,
 	"*":     opMul,
 	"/":     opDiv,
+	"^":     opPow,
 	"swap":  opSwap,
 	"dup":   opDup,
 	"over":  opOver,

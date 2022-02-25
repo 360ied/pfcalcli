@@ -64,6 +64,17 @@ var operators = map[string]func(stack []float64) ([]float64, error){
 	"trunc":       mathShim(math.Trunc),
 	"y0":          mathShim(math.Y0),
 	"y1":          mathShim(math.Y1),
+	"e":           constantShim(math.E),
+	"pi":          constantShim(math.Pi),
+	"phi":         constantShim(math.Phi),
+	"sqrt2":       constantShim(math.Sqrt2),
+	"sqrte":       constantShim(math.SqrtE),
+	"sqrtpi":      constantShim(math.SqrtPi),
+	"sqrtphi":     constantShim(math.SqrtPhi),
+	"ln2":         constantShim(math.Ln2),
+	"log2e":       constantShim(math.Log2E),
+	"ln10":        constantShim(math.Ln10),
+	"log10e":      constantShim(math.Log10E),
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation

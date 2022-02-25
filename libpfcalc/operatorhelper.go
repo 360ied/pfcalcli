@@ -21,3 +21,11 @@ func mathShim(f func(n float64) float64) func(stack []float64) ([]float64, error
 		return stack, nil
 	}
 }
+
+func constantShim(c float64) func(stack []float64) ([]float64, error) {
+	return func(stack []float64) ([]float64, error) {
+		stack = stackutil.Push(stack, c)
+
+		return stack, nil
+	}
+}

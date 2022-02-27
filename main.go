@@ -9,7 +9,11 @@ import (
 	"pfcalcli/libpfcalc/stackutil"
 )
 
+var build = "1"
+
 func main() {
+	fmt.Printf("pfcalcli build %s\n", build)
+
 	var stack []float64
 
 	scanner := bufio.NewScanner(os.Stdin)

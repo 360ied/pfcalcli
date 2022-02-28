@@ -9,7 +9,7 @@ import (
 	"pfcalcli/libpfcalc/stackutil"
 )
 
-var build = "1"
+var build = "2"
 
 func main() {
 	fmt.Printf("pfcalcli build %s\n", build)

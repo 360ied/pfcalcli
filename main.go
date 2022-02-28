@@ -35,7 +35,7 @@ func main() {
 
 		_, top, found := stackutil.Pop(stack)
 		if found {
-			fmt.Printf("%g\n", top)
+			fmt.Printf("%.6g\n", top)
 		} else {
 			fmt.Print("_\n")
 		}

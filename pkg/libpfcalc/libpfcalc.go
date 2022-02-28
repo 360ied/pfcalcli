@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"pfcalcli/libpfcalc/stackutil"
+	"pfcalcli/internal/stackutil"
 )
 
 var (

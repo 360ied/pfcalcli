@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"pfcalcli/libpfcalc"
-	"pfcalcli/libpfcalc/stackutil"
+	"pfcalcli/internal/stackutil"
+	"pfcalcli/pkg/libpfcalc"
 )
 
 var build = "2"

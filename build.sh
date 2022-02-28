@@ -2,8 +2,8 @@
 
 set -x
 
-rm pfcalcli
+rm build/pfcalcli
 
-go build && \
-	strip pfcalcli && \
-	upx --ultra-brute pfcalcli
+go build -o build/pfcalcli pfcalcli/cmd/pfcalcli && \
+	strip build/pfcalcli && \
+	upx --ultra-brute build/pfcalcli

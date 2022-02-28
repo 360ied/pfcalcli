@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	"pfcalcli/libpfcalc/stackutil"
+	"pfcalcli/internal/stackutil"
 )
 
 func opSwap(stack []float64) ([]float64, error) {

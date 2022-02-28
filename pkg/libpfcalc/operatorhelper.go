@@ -1,6 +1,6 @@
 package libpfcalc
 
-import "pfcalcli/libpfcalc/stackutil"
+import "pfcalcli/internal/stackutil"
 
 func mathShim(f func(n float64) float64) func(stack []float64) ([]float64, error) {
 	return func(stack []float64) ([]float64, error) {

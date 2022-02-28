@@ -9,7 +9,7 @@ import (
 	"pfcalcli/pkg/libpfcalc"
 )
 
-var build = "2"
+var build = "NO_VERSION_SET"
 
 func main() {
 	fmt.Printf("pfcalcli build %s\n", build)

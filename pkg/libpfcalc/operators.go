@@ -1,8 +1,9 @@
 package libpfcalc
 
 import (
-	"fmt"
 	"math"
+	"os"
+	"strconv"
 
 	"pfcalcli/internal/stackutil"
 )
@@ -107,7 +108,11 @@ func opClr([]float64) ([]float64, error) {
 }
 
 func opPrint(stack []float64) ([]float64, error) {
-	fmt.Println(stack)
+	_, _ = os.Stdout.WriteString("[")
+	for _, v := range stack {
+		_, _ = os.Stdout.WriteString(" " + strconv.FormatFloat(v, 'f', -1, 64) + " ")
+	}
+	_, _ = os.Stdout.WriteString("]\n")
 
 	return stack, nil
 }

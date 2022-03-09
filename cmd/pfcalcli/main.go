@@ -2,8 +2,9 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"pfcalcli/internal/stackutil"
 	"pfcalcli/pkg/libpfcalc"
@@ -12,14 +13,14 @@ import (
 var build = "DEVELOPMENT_BUILD"
 
 func main() {
-	fmt.Printf("pfcalcli build %s\n", build)
+	_, _ = os.Stdout.WriteString("pfcalcli build " + build + "\n")
 
 	var stack []float64
 
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
-		fmt.Printf("%d> ", len(stack))
+		_, _ = os.Stdout.WriteString(strconv.Itoa(len(stack)) + "> ")
 
 		if !scanner.Scan() {
 			break
@@ -30,19 +31,20 @@ func main() {
 		var err error
 		stack, err = libpfcalc.Evaluate(stack, expressionStr)
 		if err != nil {
-			fmt.Printf("evaluate: %v\n", err)
+			_, _ = os.Stdout.WriteString("evaluate: " + err.Error() + "\n")
 		}
 
 		_, top, found := stackutil.Pop(stack)
 		if found {
-			fmt.Printf("%.6g\n", top)
+			// print with trailing zeroes (and decimal point) removed
+			_, _ = os.Stdout.WriteString(strings.TrimRight(strings.TrimRight(strconv.FormatFloat(top, 'f', 6, 64), "0"), ".") + "\n")
 		} else {
-			fmt.Print("_\n")
+			_, _ = os.Stdout.WriteString("_\n")
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Printf("main: scanner error: %v\n", err)
+		_, _ = os.Stdout.WriteString("main: scanner error: " + err.Error() + "\n")
 		os.Exit(1)
 	}
 }

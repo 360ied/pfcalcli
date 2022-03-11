@@ -33,8 +33,9 @@ func main() {
 	moveLeft()
 
 	var (
-		stack []float64
-		// history []string
+		stack        []float64
+		history      []string
+		historyIndex int
 	)
 
 	r := bufio.NewReader(os.Stdin)
@@ -63,6 +64,8 @@ func main() {
 				input = input[:index] + string(c) + input[index:]
 				index++
 			} else if c == 10 || c == 13 { // CRLF
+				history = append(history, input)
+				historyIndex = len(history) - 1
 				break
 			} else if c == 27 { // ESC
 				next1, err := r.ReadByte()
@@ -76,10 +79,26 @@ func main() {
 				}
 
 				if next1 == 91 {
-					if next2 == 68 { // left
-						index = intmath.Max(0, index-1)
-					} else if next2 == 67 { // right
+					switch next2 {
+					case 'A': // up
+						if len(history) == 0 {
+							break
+						}
+						historyIndex = intmath.Max(0, historyIndex-1)
+						input = history[historyIndex]
+					case 'B': // down
+						if len(history) == 0 {
+							break
+						}
+						if historyIndex == len(history) {
+							break
+						}
+						historyIndex = intmath.Min(len(history)-1, historyIndex+1)
+						input = history[historyIndex]
+					case 'C': // right
 						index = intmath.Min(len(input), index+1)
+					case 'D': // left
+						index = intmath.Max(0, index-1)
 					}
 				}
 			} else if c == 127 { // backspace

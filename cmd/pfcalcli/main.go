@@ -140,7 +140,7 @@ func main() {
 			if err := moveLeft(w); err != nil {
 				panic(err)
 			}
-			if _, err := w.WriteString("\u001b[0K" + prompt + input); err != nil {
+			if _, err := w.WriteString("\u001b[0K" + prompt + libpfcalc.HighlightANSI(input)); err != nil {
 				panic(err)
 			}
 			if err := moveLeft(w); err != nil {

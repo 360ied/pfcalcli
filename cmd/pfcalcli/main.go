@@ -86,6 +86,7 @@ func main() {
 						}
 						historyIndex = intmath.Max(0, historyIndex-1)
 						input = history[historyIndex]
+						index = intmath.Min(len(input), index)
 					case 'B': // down
 						if len(history) == 0 {
 							break
@@ -95,6 +96,7 @@ func main() {
 						}
 						historyIndex = intmath.Min(len(history)-1, historyIndex+1)
 						input = history[historyIndex]
+						index = intmath.Min(len(input), index)
 					case 'C': // right
 						index = intmath.Min(len(input), index+1)
 					case 'D': // left

@@ -92,7 +92,7 @@ func main() {
 				index++
 			} else if c == 10 || c == 13 { // CRLF
 				history = append(history, input)
-				historyIndex = len(history) - 1
+				historyIndex = len(history)
 				break
 			} else if c == 27 { // ESC
 				next1, err := r.ReadByte()

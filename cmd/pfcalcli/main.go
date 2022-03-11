@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -15,22 +16,33 @@ import (
 
 var build = "DEVELOPMENT_BUILD"
 
-func moveLeft() {
-	_, _ = os.Stdout.WriteString("\u001b[1000D") // move all the way left
+func moveLeft(w io.StringWriter) error {
+	_, err := w.WriteString("\u001b[1000D") // move all the way left
+	return err
 }
 
-func moveCursor(pos int) {
-	_, _ = os.Stdout.WriteString("\u001b[" + strconv.Itoa(pos) + "C")
+func moveCursor(w io.StringWriter, pos int) error {
+	_, err := w.WriteString("\u001b[" + strconv.Itoa(pos) + "C")
+	return err
 }
 
 func main() {
+	w := bufio.NewWriter(os.Stdout)
+
 	_, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
 		panic(err)
 	}
 
-	_, _ = os.Stdout.WriteString("pfcalcli build " + build + "\n")
-	moveLeft()
+	if _, err := w.WriteString("pfcalcli build " + build + "\n"); err != nil {
+		panic(err)
+	}
+	if err := moveLeft(w); err != nil {
+		panic(err)
+	}
+	if err := w.Flush(); err != nil {
+		panic(err)
+	}
 
 	var (
 		stack        []float64
@@ -42,7 +54,13 @@ func main() {
 
 	for {
 		prompt := strconv.Itoa(len(stack)) + "> "
-		_, _ = os.Stdout.WriteString(prompt)
+		_, err := w.WriteString(prompt)
+		if err != nil {
+			panic(err)
+		}
+		if err := w.Flush(); err != nil {
+			panic(err)
+		}
 
 		input := ""
 		index := 0
@@ -55,9 +73,18 @@ func main() {
 
 			if c == 3 {
 				// ctrl+c
-				moveLeft()
-				_, _ = os.Stdout.WriteString("\nExiting...\n")
-				moveLeft()
+				if err := moveLeft(w); err != nil {
+					panic(err)
+				}
+				if _, err := w.WriteString("\nExiting...\n"); err != nil {
+					panic(err)
+				}
+				if err := moveLeft(w); err != nil {
+					panic(err)
+				}
+				if err := w.Flush(); err != nil {
+					panic(err)
+				}
 				os.Exit(0)
 			} else if c >= 32 && c <= 126 {
 				// printable character
@@ -110,34 +137,72 @@ func main() {
 				}
 			}
 
-			// TODO: make this not call write so many times
-			moveLeft()
-			_, _ = os.Stdout.WriteString("\u001b[0K")
-			_, _ = os.Stdout.WriteString(prompt + input)
-			moveLeft()
-
+			if err := moveLeft(w); err != nil {
+				panic(err)
+			}
+			if _, err := w.WriteString("\u001b[0K" + prompt + input); err != nil {
+				panic(err)
+			}
+			if err := moveLeft(w); err != nil {
+				panic(err)
+			}
 			if index > 0 {
-				moveCursor(index + len(prompt))
+				if err := moveCursor(w, index+len(prompt)); err != nil {
+					panic(err)
+				}
+			}
+			if err := w.Flush(); err != nil {
+				panic(err)
 			}
 		}
 
-		_, _ = os.Stdout.WriteString("\n")
-		moveLeft()
+		if _, err := w.WriteString("\n"); err != nil {
+			panic(err)
+		}
+		if err := moveLeft(w); err != nil {
+			panic(err)
+		}
+		if err := w.Flush(); err != nil {
+			panic(err)
+		}
 
-		var err error
-		stack, err = libpfcalc.Evaluate(stack, input)
-		if err != nil {
-			_, _ = os.Stdout.WriteString("evaluate: " + err.Error() + "\n")
-			moveLeft()
+		var err_ error
+		stack, err_ = libpfcalc.Evaluate(stack, input)
+		if err_ != nil {
+			if _, err := w.WriteString("evaluate: " + err_.Error() + "\n"); err != nil {
+				panic(err)
+			}
+			if err := moveLeft(w); err != nil {
+				panic(err)
+			}
+			if err := w.Flush(); err != nil {
+				panic(err)
+			}
 		}
 
 		_, top, found := stackutil.Pop(stack)
 		if found {
 			// print with trailing zeroes (and decimal point) removed
-			_, _ = os.Stdout.WriteString(strings.TrimRight(strings.TrimRight(strconv.FormatFloat(top, 'f', 6, 64), "0"), ".") + "\n")
+			if _, err :=
+				w.WriteString(
+					strings.TrimRight(
+						strings.TrimRight(
+							strconv.FormatFloat(top, 'f', 6, 64),
+							"0"),
+						".") +
+						"\n"); err != nil {
+				panic(err)
+			}
 		} else {
-			_, _ = os.Stdout.WriteString("_\n")
+			if _, err := w.WriteString("_\n"); err != nil {
+				panic(err)
+			}
 		}
-		moveLeft()
+		if err := moveLeft(w); err != nil {
+			panic(err)
+		}
+		if err := w.Flush(); err != nil {
+			panic(err)
+		}
 	}
 }

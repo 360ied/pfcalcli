@@ -21,3 +21,26 @@ func Clone(stack []float64) []float64 {
 	copy(newStack, stack)
 	return newStack
 }
+
+// PopN fills provided array with floats popped from stack
+// true is returned if the entire buffer is filled
+// false is returned if stack underflow
+// if stack underflow, the original stack is returned
+func PopN(stack, ret []float64) ([]float64, bool) {
+	newStack := stack // shallow copy slice fat pointer
+
+	for i := range ret {
+		var (
+			v     float64
+			found bool
+		)
+		newStack, v, found = Pop(newStack)
+		if !found {
+			return stack, false
+		}
+
+		ret[i] = v
+	}
+
+	return newStack, true
+}

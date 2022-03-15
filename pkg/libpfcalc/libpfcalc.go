@@ -75,6 +75,8 @@ var operators = map[string]func(stack []float64) ([]float64, error){
 	"log2e":       constantShim(math.Log2E),
 	"ln10":        constantShim(math.Ln10),
 	"log10e":      constantShim(math.Log10E),
+	"avg":         opAvg,
+	"len":         opLen,
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation

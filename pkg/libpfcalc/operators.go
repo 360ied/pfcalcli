@@ -1,10 +1,12 @@
 package libpfcalc
 
 import (
+	"errors"
 	"math"
 	"os"
 	"strconv"
 
+	"pfcalcli/internal/avg"
 	"pfcalcli/internal/stackutil"
 )
 
@@ -218,6 +220,44 @@ func opPow(stack []float64) ([]float64, error) {
 	}
 
 	stack = stackutil.Push(stack, math.Pow(y, x))
+
+	return stack, nil
+}
+
+func opAvg(stack []float64) ([]float64, error) {
+	const MAX_N = 1024
+
+	var (
+		nf    float64 // number of numbers to average
+		found bool
+	)
+
+	stack, nf, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	n := int(nf)
+	if n < 1 {
+		return nil, errors.New("libpfcalc: opAvg: number of numbers to average is smaller than 1")
+	} else if n > MAX_N {
+		return nil, errors.New("libpfcalc: opAvg: number of numbers to average is too large! n > MAX_N (" + strconv.Itoa(MAX_N) + ")")
+	}
+
+	nums := make([]float64, n)
+
+	stack, found = stackutil.PopN(stack, nums)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	stack = stackutil.Push(stack, avg.Avg(nums))
+
+	return stack, nil
+}
+
+func opLen(stack []float64) ([]float64, error) {
+	stack = stackutil.Push(stack, float64(len(stack)))
 
 	return stack, nil
 }

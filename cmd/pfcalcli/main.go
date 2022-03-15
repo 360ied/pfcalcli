@@ -155,10 +155,8 @@ func main() {
 			if err := moveLeft(w); err != nil {
 				panic(err)
 			}
-			if index > 0 {
-				if err := moveCursor(w, index+len(prompt)); err != nil {
-					panic(err)
-				}
+			if err := moveCursor(w, index+len(prompt)); err != nil {
+				panic(err)
 			}
 			if err := w.Flush(); err != nil {
 				panic(err)

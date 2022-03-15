@@ -88,8 +88,17 @@ func main() {
 				os.Exit(0)
 			} else if c >= 32 && c <= 126 {
 				// printable character
-				input = input[:index] + string(c) + input[index:]
-				index++
+				if c == '$' {
+					// move cursor to the end of line
+					index = len(input)
+				} else if c == '^' {
+					// move cursor to the start of line
+					index = 0
+				} else {
+					// add char to input
+					input = input[:index] + string(c) + input[index:]
+					index++
+				}
 			} else if c == 10 || c == 13 { // CRLF
 				history = append(history, input)
 				historyIndex = len(history)

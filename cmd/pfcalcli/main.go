@@ -48,6 +48,7 @@ func main() {
 		stack        []float64
 		history      []string
 		historyIndex int
+		normalMode   bool
 	)
 
 	r := bufio.NewReader(os.Stdin)
@@ -86,14 +87,19 @@ func main() {
 					panic(err)
 				}
 				os.Exit(0)
+			} else if c == 9 {
+				// tab
+				normalMode = !normalMode
 			} else if c >= 32 && c <= 126 {
 				// printable character
-				if c == '$' {
-					// move cursor to the end of line
-					index = len(input)
-				} else if c == '^' {
-					// move cursor to the start of line
-					index = 0
+				if normalMode {
+					if c == '$' {
+						// move cursor to the end of line
+						index = len(input)
+					} else if c == '^' {
+						// move cursor to the start of line
+						index = 0
+					}
 				} else {
 					// add char to input
 					input = input[:index] + string(c) + input[index:]

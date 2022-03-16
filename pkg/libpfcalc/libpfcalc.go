@@ -14,7 +14,9 @@ var (
 	ErrInvalidOperator = errors.New("libpfcalc: invalid operator")
 )
 
-var operators = map[string]func(stack []float64) ([]float64, error){
+type operator = func(stack []float64) ([]float64, error)
+
+var operators = map[string]operator{
 	"+":           opAdd,
 	"-":           opSub,
 	"*":           opMul,
@@ -83,35 +85,54 @@ var operators = map[string]func(stack []float64) ([]float64, error){
 // Evaluate doesn't modify stack, the returned slice is a new allocation
 // If an error is returned, the old stack is returned as well
 func Evaluate(stack []float64, expressionStr string) ([]float64, error) {
-	newStack := stackutil.Clone(stack)
+	ops, err := parse(expressionStr)
+	if err != nil {
+		return stack, nil
+	}
 
-	expressions := strings.Split(expressionStr, " ")
+	stack, err = evalOps(stack, ops)
+	return stack, err
+}
 
-	for _, expression := range expressions {
-		expression = strings.TrimSpace(expression)
+func parse(s string) ([]operator, error) {
+	var ops []operator
 
-		if len(expression) == 0 {
+	for _, tok := range strings.Split(s, " ") {
+		tok = strings.TrimSpace(tok)
+		if len(tok) == 0 {
+			// skip empty tokens
 			continue
 		}
 
-		value, err := strconv.ParseFloat(expression, 64)
+		n, err := strconv.ParseFloat(tok, 64)
 		if err != nil {
 			// value is not a float
-			operator, in := operators[expression]
+			op, in := operators[tok]
 			if !in {
-				return stack, ErrInvalidOperator
+				// value is not an operator
+				return nil, ErrInvalidOperator
+			} else {
+				// value is an operator
+				ops = append(ops, op)
 			}
-
-			newStack, err = operator(newStack)
-			if err != nil {
-				// operator had an error
-				return stack, err
-			}
-
-			continue
+		} else {
+			// value is a float
+			ops = append(ops, constantShim(n))
 		}
+	}
 
-		newStack = stackutil.Push(newStack, value)
+	return ops, nil
+}
+
+func evalOps(stack []float64, ops []operator) ([]float64, error) {
+	newStack := stackutil.Clone(stack)
+
+	for _, op := range ops {
+		var err error
+		newStack, err = op(newStack)
+		if err != nil {
+			return stack, err
+		}
 	}
 
 	return newStack, nil

@@ -20,6 +20,7 @@ var operators = map[string]func(stack []float64) ([]float64, error){
 	"*":           opMul,
 	"/":           opDiv,
 	"^":           opPow,
+	"pow":         opPow,
 	"swap":        opSwap,
 	"dup":         opDup,
 	"over":        opOver,

@@ -26,6 +26,17 @@ func moveCursor(w io.StringWriter, pos int) error {
 	return err
 }
 
+func promptStr(stackLen int, normalMode bool) string {
+	prompt := strconv.Itoa(stackLen)
+	if normalMode {
+		prompt += "N "
+	} else {
+		prompt += "> "
+	}
+
+	return prompt
+}
+
 func main() {
 	w := bufio.NewWriter(os.Stdout)
 
@@ -54,7 +65,7 @@ func main() {
 	r := bufio.NewReader(os.Stdin)
 
 	for {
-		prompt := strconv.Itoa(len(stack)) + "> "
+		prompt := promptStr(len(stack), normalMode)
 		_, err := w.WriteString(prompt)
 		if err != nil {
 			panic(err)
@@ -90,6 +101,7 @@ func main() {
 			} else if c == 9 {
 				// tab
 				normalMode = !normalMode
+				prompt = promptStr(len(stack), normalMode)
 			} else if c >= 32 && c <= 126 {
 				// printable character
 				if normalMode {

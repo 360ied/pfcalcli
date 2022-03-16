@@ -16,12 +16,12 @@ func opSwap(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
+	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack, y, found = stackutil.Pop(stack)
+	stack, x, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
@@ -125,12 +125,12 @@ func opAdd(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
+	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack, y, found = stackutil.Pop(stack)
+	stack, x, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
@@ -146,17 +146,17 @@ func opSub(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
-	if !found {
-		return nil, ErrStackUnderflow
-	}
-
 	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack = stackutil.Push(stack, y-x) // 1 2 - eq 1 - 2
+	stack, x, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	stack = stackutil.Push(stack, x-y)
 
 	return stack, nil
 }
@@ -167,12 +167,12 @@ func opMul(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
+	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack, y, found = stackutil.Pop(stack)
+	stack, x, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
@@ -188,17 +188,17 @@ func opDiv(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
-	if !found {
-		return nil, ErrStackUnderflow
-	}
-
 	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack = stackutil.Push(stack, y/x) // 1 2 / eq 1 / 2
+	stack, x, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	stack = stackutil.Push(stack, x/y)
 
 	return stack, nil
 }
@@ -209,17 +209,17 @@ func opPow(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
-	if !found {
-		return nil, ErrStackUnderflow
-	}
-
 	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack = stackutil.Push(stack, math.Pow(y, x))
+	stack, x, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	stack = stackutil.Push(stack, math.Pow(x, y))
 
 	return stack, nil
 }
@@ -297,23 +297,23 @@ func opCmp(stack []float64) ([]float64, error) {
 		found bool
 	)
 
-	stack, x, found = stackutil.Pop(stack)
+	stack, y, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
-	stack, y, found = stackutil.Pop(stack)
+	stack, x, found = stackutil.Pop(stack)
 	if !found {
 		return nil, ErrStackUnderflow
 	}
 
 	var ret float64
 
-	if y < x {
+	if x < y {
 		ret = -1
-	} else if y == x {
+	} else if x == y {
 		ret = 0
-	} else { // y > x
+	} else { // x > y
 		ret = 1
 	}
 

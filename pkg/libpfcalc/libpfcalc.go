@@ -83,6 +83,7 @@ var operators = map[string]Operator{
 	"len":         opLen,
 	"=":           opEq,
 	"eq":          opEq,
+	"cmp":         opCmp,
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation

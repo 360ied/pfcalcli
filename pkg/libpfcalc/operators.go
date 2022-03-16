@@ -290,3 +290,34 @@ func opEq(stack []float64) ([]float64, error) {
 
 	return stack, nil
 }
+
+func opCmp(stack []float64) ([]float64, error) {
+	var (
+		x, y  float64
+		found bool
+	)
+
+	stack, x, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	stack, y, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	var ret float64
+
+	if y < x {
+		ret = -1
+	} else if y == x {
+		ret = 0
+	} else { // y > x
+		ret = 1
+	}
+
+	stack = stackutil.Push(stack, ret)
+
+	return stack, nil
+}

@@ -261,3 +261,32 @@ func opLen(stack []float64) ([]float64, error) {
 
 	return stack, nil
 }
+
+func opEq(stack []float64) ([]float64, error) {
+	var (
+		x, y  float64
+		found bool
+	)
+
+	stack, x, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	stack, y, found = stackutil.Pop(stack)
+	if !found {
+		return nil, ErrStackUnderflow
+	}
+
+	var ret float64
+
+	if x == y {
+		ret = 1
+	} else {
+		ret = 0
+	}
+
+	stack = stackutil.Push(stack, ret)
+
+	return stack, nil
+}

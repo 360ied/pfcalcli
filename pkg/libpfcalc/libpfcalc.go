@@ -81,6 +81,8 @@ var operators = map[string]Operator{
 	"log10e":      constantShim(math.Log10E),
 	"avg":         opAvg,
 	"len":         opLen,
+	"=":           opEq,
+	"eq":          opEq,
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation

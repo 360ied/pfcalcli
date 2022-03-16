@@ -60,6 +60,8 @@ func main() {
 		history      []string
 		historyIndex int
 		normalMode   bool
+
+		functions = map[string]libpfcalc.Operator{}
 	)
 
 	r := bufio.NewReader(os.Stdin)
@@ -167,7 +169,7 @@ func main() {
 			if err := moveLeft(w); err != nil {
 				panic(err)
 			}
-			if _, err := w.WriteString("\u001b[0K" + prompt + libpfcalc.HighlightANSI(input)); err != nil {
+			if _, err := w.WriteString("\u001b[0K" + prompt + libpfcalc.HighlightANSI(input, functions)); err != nil {
 				panic(err)
 			}
 			if err := moveLeft(w); err != nil {
@@ -192,7 +194,7 @@ func main() {
 		}
 
 		var err_ error
-		stack, err_ = libpfcalc.Evaluate(stack, input)
+		stack, err_ = libpfcalc.Evaluate(stack, input, functions)
 		if err_ != nil {
 			if _, err := w.WriteString("evaluate: " + err_.Error() + "\n"); err != nil {
 				panic(err)

@@ -29,3 +29,14 @@ func constantShim(c float64) func(stack []float64) ([]float64, error) {
 		return stack, nil
 	}
 }
+
+func combineOps(ops []Operator) func(stack []float64) ([]float64, error) {
+	return func(stack []float64) ([]float64, error) {
+		newStack, err := evalOps(stack, ops)
+		if err != nil {
+			return nil, err
+		}
+
+		return newStack, nil
+	}
+}

@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"pfcalcli/internal/cmdparser"
 	"pfcalcli/internal/stackutil"
 )
 
@@ -14,9 +15,9 @@ var (
 	ErrInvalidOperator = errors.New("libpfcalc: invalid operator")
 )
 
-type operator = func(stack []float64) ([]float64, error)
+type Operator = func(stack []float64) ([]float64, error)
 
-var operators = map[string]operator{
+var operators = map[string]Operator{
 	"+":           opAdd,
 	"-":           opSub,
 	"*":           opMul,
@@ -84,18 +85,56 @@ var operators = map[string]operator{
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation
 // If an error is returned, the old stack is returned as well
-func Evaluate(stack []float64, expressionStr string) ([]float64, error) {
-	ops, err := parse(expressionStr)
+func Evaluate(stack []float64, expressionStr string, functions map[string]Operator) ([]float64, error) {
+	cmdName, cmdPos, err := cmdparser.Parse(expressionStr)
 	if err != nil {
+		if err == cmdparser.ErrNotCommand {
+			ops, err := parse(expressionStr, functions)
+			if err != nil {
+				return stack, err
+			}
+
+			stack, err = evalOps(stack, ops)
+			return stack, err
+		} else {
+			return stack, err
+		}
+	}
+
+	if cmdName == "func" {
+		if len(cmdPos) < 2 {
+			// function has no body (or name)
+			return stack, errors.New("libpfcalc: Evaluate: function has no body (or name)")
+		}
+
+		funcName := cmdPos[0]
+		funcContent := strings.Join(cmdPos[1:], " ")
+
+		if err := RegisterFunction(functions, funcName, funcContent); err != nil {
+			return stack, err
+		}
+
 		return stack, nil
 	}
 
-	stack, err = evalOps(stack, ops)
-	return stack, err
+	return stack, errors.New("libpfcalc: Evaluate: unknown function")
 }
 
-func parse(s string) ([]operator, error) {
-	var ops []operator
+func RegisterFunction(functions map[string]Operator, name, expressionStr string) error {
+	ops, err := parse(expressionStr, functions)
+	if err != nil {
+		return err
+	}
+
+	fu := combineOps(ops)
+
+	functions[name] = fu
+
+	return nil
+}
+
+func parse(s string, functions map[string]Operator) ([]Operator, error) {
+	var ops []Operator
 
 	for _, tok := range strings.Split(s, " ") {
 		tok = strings.TrimSpace(tok)
@@ -110,7 +149,14 @@ func parse(s string) ([]operator, error) {
 			op, in := operators[tok]
 			if !in {
 				// value is not an operator
-				return nil, ErrInvalidOperator
+				fu, in := functions[tok]
+				if !in {
+					// value is not a function
+					return nil, ErrInvalidOperator
+				} else {
+					// value is a function
+					ops = append(ops, fu)
+				}
 			} else {
 				// value is an operator
 				ops = append(ops, op)
@@ -124,7 +170,7 @@ func parse(s string) ([]operator, error) {
 	return ops, nil
 }
 
-func evalOps(stack []float64, ops []operator) ([]float64, error) {
+func evalOps(stack []float64, ops []Operator) ([]float64, error) {
 	newStack := stackutil.Clone(stack)
 
 	for _, op := range ops {

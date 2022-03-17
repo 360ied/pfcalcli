@@ -321,3 +321,7 @@ func opCmp(stack []float64) ([]float64, error) {
 
 	return stack, nil
 }
+
+func opNoOp(stack []float64) ([]float64, error) {
+	return stack, nil
+}

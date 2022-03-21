@@ -3,6 +3,7 @@ package cmdparser
 import (
 	"errors"
 	"strings"
+	"unicode"
 )
 
 var (
@@ -51,10 +52,11 @@ func Parse(s string) (
 }
 
 func nextToken(s string) (string, int) {
-	nextSpace := strings.Index(s, " ")
-	if nextSpace == -1 {
-		return s, -1
+	for pos, char := range s {
+		if unicode.IsSpace(char) {
+			return s[:pos], pos
+		}
 	}
 
-	return s[:nextSpace], nextSpace
+	return s, -1
 }

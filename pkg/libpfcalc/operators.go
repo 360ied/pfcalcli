@@ -26,7 +26,7 @@ func opSwap(stack []float64) ([]float64, error) {
 		return nil, ErrStackUnderflow
 	}
 
-	stack = stackutil.Push(stack, x, y)
+	stack = stackutil.Push(stack, y, x)
 
 	return stack, nil
 }

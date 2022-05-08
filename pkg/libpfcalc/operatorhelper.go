@@ -36,6 +36,17 @@ func degRadShim(f func(rad float64) float64) func(deg float64) float64 {
 	}
 }
 
+func radDegShim(f func(deg float64) float64) func(deg float64) float64 {
+	return func(rad float64) float64 {
+		var n float64
+
+		n = f(rad)
+		n = degconv.RadiansToDegrees(n)
+
+		return n
+	}
+}
+
 func constantShim(c float64) func(stack []float64) ([]float64, error) {
 	return func(stack []float64) ([]float64, error) {
 		stack = stackutil.Push(stack, c)

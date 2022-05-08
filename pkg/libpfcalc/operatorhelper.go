@@ -1,6 +1,9 @@
 package libpfcalc
 
-import "pfcalcli/internal/stackutil"
+import (
+	"pfcalcli/internal/degconv"
+	"pfcalcli/internal/stackutil"
+)
 
 func mathShim(f func(n float64) float64) func(stack []float64) ([]float64, error) {
 	return func(stack []float64) ([]float64, error) {
@@ -19,6 +22,17 @@ func mathShim(f func(n float64) float64) func(stack []float64) ([]float64, error
 		stack = stackutil.Push(stack, val)
 
 		return stack, nil
+	}
+}
+
+func degRadShim(f func(rad float64) float64) func(deg float64) float64 {
+	return func(deg float64) float64 {
+		var n float64
+
+		n = degconv.DegreesToRadians(deg)
+		n = f(n)
+
+		return n
 	}
 }
 

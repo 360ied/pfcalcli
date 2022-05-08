@@ -85,6 +85,18 @@ var operators = map[string]Operator{
 	"eq":          opEq,
 	"cmp":         opCmp,
 	"noop":        opNoOp,
+	"dacos":       mathShim(degRadShim(math.Acos)),
+	"dacosh":      mathShim(degRadShim(math.Acosh)),
+	"dasin":       mathShim(degRadShim(math.Asin)),
+	"dasinh":      mathShim(degRadShim(math.Asin)),
+	"datan":       mathShim(degRadShim(math.Atan)),
+	"datanh":      mathShim(degRadShim(math.Atanh)),
+	"dcos":        mathShim(degRadShim(math.Cos)),
+	"dcosh":       mathShim(degRadShim(math.Cosh)),
+	"dsin":        mathShim(degRadShim(math.Sin)),
+	"dsinh":       mathShim(degRadShim(math.Sinh)),
+	"dtan":        mathShim(degRadShim(math.Tan)),
+	"dtanh":       mathShim(degRadShim(math.Tanh)),
 }
 
 // Evaluate doesn't modify stack, the returned slice is a new allocation
